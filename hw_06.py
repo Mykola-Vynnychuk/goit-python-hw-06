@@ -2,12 +2,17 @@ import sys
 from pathlib import Path
 
 
-CATEGORIES = {"Audio": ["mp3", "aiff"],
-              "Documents": ["docx", "txt", "pdf"]}
+CATEGORIES = {"Audio": [".mp3", ".aiff"],
+              "Documents": [".docx", ".txt", ".pdf"]}
+
+def get_categories(path: Path) -> str:
+    ext = path.suffix
+    print(ext)
 
 def sort_folder(path: Path) -> None:
     for item in path.glob("**/*"):
-        print (item)
+        if item.is_file:
+            get_categories(item)
 
 def main():
     try:
