@@ -7,12 +7,15 @@ CATEGORIES = {"Audio": [".mp3", ".aiff"],
 
 def get_categories(path: Path) -> str:
     ext = path.suffix
-    print(ext)
+    for cat, exts in CATEGORIES.items():
+        if ext in exts:
+            return cat
+    return "Other"
 
 def sort_folder(path: Path) -> None:
     for item in path.glob("**/*"):
         if item.is_file:
-            get_categories(item)
+            print(get_categories(item))
 
 def main():
     try:
