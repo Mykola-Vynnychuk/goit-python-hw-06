@@ -29,15 +29,14 @@ for i in BAD_SYMBOLS:
 def normalize(name: str) -> str:
     return name.translate(TRANS)
     
-def move_file(path: Path, root_dir: Path, categorie: str) -> None:
+def move_file(file: Path, root_dir: Path, categorie: str) -> None:
     target_dir = root_dir.joinpath(categorie)
     if not target_dir.exists():
-        print(f"Make {target_dir}")
         target_dir.mkdir()
-    path.replace(target_dir.joinpath(f"{normalize(path.stem)}{path.suffix}"))
+    file.replace(target_dir.joinpath(f"{normalize(file.stem)}{file.suffix}"))
 
-def get_categories(path: Path) -> str:
-    ext = path.suffix
+def get_categories(file: Path) -> str:
+    ext = file.suffix
     for cat, exts in CATEGORIES.items():
         if ext in exts:
             return cat
@@ -51,11 +50,14 @@ def delete_empty(path: Path) -> None:
                 item.rmdir()
 
 def sort_folder(path: Path) -> None:
+    path_list = []
     for item in path.glob("**/*"):
-        if item.is_file:
-            cat = get_categories(item)
-            move_file(item, path, cat)
-    delete_empty(path)
+        path_list.append(item)
+    for i in path_list[::-1]:
+        if i.is_file():
+            move_file(i, path, get_categories(i))
+        else: 
+            delete_empty(path)
 
 def main():
     try:
