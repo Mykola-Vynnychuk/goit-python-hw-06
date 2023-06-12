@@ -2,8 +2,11 @@ import sys
 from pathlib import Path
 
 
-CATEGORIES = {"Audio": [".mp3", ".aiff"],
-              "Documents": [".docx", ".txt", ".pdf"]}
+CATEGORIES = {"Archives": [".zip", ".gz", ".tar"],
+              "Audio": [".mp3", ".ogg", ".wav", ".amr"],
+              "Documents": [".doc", ".docx", ".txt", ".pdf", ".xlsx", ".pptx"],
+              "Images": [".jpeg", ".png", ".jpg", ".svg"],
+              "Video": [".avi", ".mp4", ".mov", ".mkv"]}
 
 CYRILLIC_SYMBOLS = "абвгґдеёєжзиіїйклмнопрстуфхцчшщъыьэюя"
 
@@ -53,7 +56,7 @@ def sort_folder(path: Path) -> None:
             cat = get_categories(item)
             move_file(item, path, cat)
     delete_empty(path)
-    
+
 def main():
     try:
         path = Path(sys.argv[1])
