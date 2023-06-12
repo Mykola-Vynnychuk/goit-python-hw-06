@@ -40,12 +40,20 @@ def get_categories(path: Path) -> str:
             return cat
     return "Other"
 
+def delete_empty(path: Path) -> None:
+    for item in path.iterdir():
+        if item.is_dir():
+            delete_empty(item)
+            if not any(item.iterdir()):
+                item.rmdir()
+
 def sort_folder(path: Path) -> None:
     for item in path.glob("**/*"):
         if item.is_file:
             cat = get_categories(item)
             move_file(item, path, cat)
-
+    delete_empty(path)
+    
 def main():
     try:
         path = Path(sys.argv[1])
