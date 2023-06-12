@@ -65,10 +65,8 @@ def unpack_archive(path: Path) -> None:
                 continue
 
 def sort_folder(path: Path) -> None:
-    path_list = []
-    for item in path.glob("**/*"):
-        path_list.append(item)
-    for i in path_list[::-1]:
+    path_list = list(path.glob("**/*"))[::-1]
+    for i in path_list:
         if i.is_file():
             move_file(i, path, get_categories(i))
         else: 
