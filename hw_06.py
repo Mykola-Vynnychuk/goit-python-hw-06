@@ -41,7 +41,7 @@ def move_file(file: Path, root_dir: Path, categorie: str) -> None:
     
     if new_name.exists():
         new_name = new_name.with_name(f"{new_name.stem}-{uuid.uuid4()}{file.suffix}")
-        print(f"File {file.name} has been renamed to {new_name.name}")
+        print(f"File {file} has been renamed to {new_name.name}")
     file.rename(new_name)
     print(f"File {new_name.name} has been moved to the directory \"{categorie}\"")
 
