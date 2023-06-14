@@ -10,6 +10,7 @@ CATEGORIES = {"Archives": [".zip", ".gz", ".tar", ".rar"],
               "Images": [".jpeg", ".png", ".jpg", ".svg"],
               "Video": [".avi", ".mp4", ".mov", ".mkv"]}
 
+
 CYRILLIC_SYMBOLS = "абвгґдеёєжзиіїйклмнопрстуфхцчшщъыьэюя"
 
 TRANSLATION = ("a", "b", "v", "h", "g", "d", "e", "e", "ie", "zh", 
@@ -28,6 +29,10 @@ for c, t in zip(list(CYRILLIC_SYMBOLS), TRANSLATION):
 for i in BAD_SYMBOLS:
     TRANS[ord(i)] = "_"
 
+known_extensions = []
+
+unknown_extensions = []
+
 def normalize(name: str) -> str:
     return name.translate(TRANS)
     
@@ -44,7 +49,9 @@ def get_categories(file: Path) -> str:
     ext = file.suffix
     for cat, exts in CATEGORIES.items():
         if ext in exts:
+            known_extensions.append(file.suffix)
             return cat
+    unknown_extensions.append(file.suffix)
     return "Other"
 
 def delete_empty_folder(path: Path) -> None:
@@ -72,6 +79,15 @@ def sort_folder(path: Path) -> None:
         else: 
             delete_empty_folder(path)
 
+def get_category_files_log(path: Path) -> None:
+    for category in CATEGORIES:
+        category_dir = path / category
+        files = list(category_dir.glob("*"))
+        if files:
+            print(f"\nFiles in category '{category}':")
+            for file in files:
+                print(file.name)
+
 def main():
     try:
         path = Path(sys.argv[1])
@@ -83,7 +99,10 @@ def main():
     
     sort_folder(path)
     unpack_archive(path)
-    return "All ok"
+    get_category_files_log(path)
+    print(f'\nSorted files with the following known extensions:\n{set(known_extensions)}\n')
+    print(f'\nFiles with the following unknown extensions have been moved to the "Other" directory:\n{set(unknown_extensions)}\n')
+    return "Congratulations! The files have been successfully sorted\n"
 
 if __name__ == "__main__":
     print(main())
