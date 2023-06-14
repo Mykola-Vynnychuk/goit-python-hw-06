@@ -40,10 +40,15 @@ def move_file(file: Path, root_dir: Path, categorie: str) -> None:
     target_dir = root_dir.joinpath(categorie)
     if not target_dir.exists():
         target_dir.mkdir()
+        print(f"Make {target_dir}")
+
     new_name = target_dir.joinpath(f"{normalize(file.stem)}{file.suffix}")
+    
     if new_name.exists():
         new_name = new_name.with_name(f"{new_name.stem}-{uuid.uuid4()}{file.suffix}")
+        print(f"File {file} has been renamed to {new_name.name}")
     file.rename(new_name)
+    print(f"File {new_name.name} has been moved to the directory \"{categorie}\"")
 
 def get_categories(file: Path) -> str:
     ext = file.suffix
@@ -60,16 +65,23 @@ def delete_empty_folder(path: Path) -> None:
             delete_empty_folder(item)
             if not any(item.iterdir()):
                 item.rmdir()
+                print(f"Empty directory {str(item)} has been deleted")
 
 def unpack_archive(path: Path) -> None:
     archives_folder = path / "Archives"
-    for file_path in archives_folder.iterdir():
-        if file_path.is_file():
-            try:
-                shutil.unpack_archive(str(file_path), str(archives_folder / file_path.stem))
-                file_path.unlink()
-            except:
-                continue
+    if archives_folder.is_dir():
+        for file_path in archives_folder.iterdir():
+            if file_path.is_file():
+                try:
+                    shutil.unpack_archive(str(file_path), str(archives_folder / file_path.stem))
+                    print(f"Archive {str(file_path)} unpack successful")
+                    file_path.unlink()
+                except:
+                    print(f"Archive {str(file_path)} was not unpacked")
+                    continue
+    else:
+        print("Directoria 'Archives' does not exist")
+    
 
 def sort_folder(path: Path) -> None:
     path_list = list(path.glob("**/*"))[::-1]
